@@ -1,0 +1,67 @@
+service: omni-dw-add-document
+
+provider:
+  name: aws
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  versionFunctions: false
+  tags: ${self:custom.tags}
+  stackTags: ${self:custom.tags}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "logs:CreateLogGroup"
+        - "logs:CreateLogStream"
+        - "logs:PutLogEvents"
+        - "ec2:CreateNetworkInterface"
+        - "ec2:DescribeNetworkInterfaces"
+        - "ec2:DeleteNetworkInterface"
+        - "ec2:AssignPrivateIpAddresses"
+        - "ec2:UnassignPrivateIpAddresses"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "sqs:GetQueueUrl"
+        - "sqs:GetQueueAttributes"
+        - "sqs:ReceiveMessage"
+        - "sqs:DeleteMessage"
+      Resource: "*"
+  runtime: nodejs14.x
+  environment:
+    REGION: ${self:custom.region}
+    STAGE: ${self:custom.stage}
+  deploymentBucket:
+    name: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
+    serverSideEncryption: AES256
+
+custom:
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  tags:
+    Application: OmniRealTimeReplication
+    CreateBy: BizCloudExperts
+    Environment: ${self:custom.stage}
+
+plugins:
+  - serverless-offline
+  - serverless-provisioned-concurrency-autoscaling
+
+package:
+  individually: true
+
+
+functions:
+  customer-response: ${file(config/functions/customer-response.yml):function}
+  customer-autherization: ${file(config/functions/customer-autherization.yml):function}
+  create-document: ${file(config/functions/create-document.yml):function}
+  publish-to-wt: ${file(config/functions/publish-to-wt.yml):function}
