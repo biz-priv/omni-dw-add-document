@@ -61,7 +61,7 @@ package:
 
 
 functions:
-  customer-response: ${file(config/functions/customer-response.yml):function}
-  customer-autherization: ${file(config/functions/customer-autherization.yml):function}
-  create-document: ${file(config/functions/create-document.yml):function}
-  publish-to-wt: ${file(config/functions/publish-to-wt.yml):function}
+  # customer-response: ${file(config/functions/customer-response.yml):function}
+  customer-authorization: ${file(config/functions/customer-authorization.yml):function}
+  # create-document: ${file(config/functions/create-document.yml):function}
+  # publish-to-wt: ${file(config/functions/publish-to-wt.yml):function}
