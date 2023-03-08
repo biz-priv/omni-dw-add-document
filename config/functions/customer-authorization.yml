@@ -15,4 +15,5 @@ function:
     CUSTOMER_ENTITLEMENT_HOUSEBILL_INDEX: ${ssm:/omni-dw/${self:provider.stage}/entitlement/houseBillNumber/index}
     CUSTOMER_ENTITLEMENT_FILENUMBER_INDEX: ${ssm:/omni-dw/${self:provider.stage}/entitlement/fileNumber/index}
     TOKEN_VALIDATION_TABLE_INDEX: ${ssm:/omni-dw/${self:provider.stage}/tokenValidator/apiKey/index}
+    IVIA_CUSTOMERID: ${ssm:/omni-dw/${self:provider.stage}/ivia_customerid}
     REGION: ${self:provider.region}

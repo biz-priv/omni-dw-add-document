@@ -35,7 +35,7 @@ exports.handler = async (event, context) => {
   const customerId = response.Items[0].CustomerID.S;
   console.log("customerId", customerId)
 
-  const isIvia = customerId === '10321412';
+  const isIvia = customerId === process.env.IVIA_CUSTOMERID;
 
   // If customerId is not Ivia, check housebill entitlements
   if (!isIvia) {
