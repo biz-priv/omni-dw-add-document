@@ -1,0 +1,18 @@
+---
+function:
+  handler: src/customer_authorization.handler
+  name: custom-authorization-${self:provider.stage}
+  description: ${self:service} custom authorizer - ${self:provider.stage}
+  runtime: nodejs14.x
+  package:
+    include:
+      - src/customer_authorization.js
+    exclude:
+      - "**/*"
+  environment:
+    TOKEN_VALIDATION_TABLE: ${ssm:/omni-dw/${self:provider.stage}/tokenValidator/table} #omni-dw-token-validator-dev
+    CUSTOMER_ENTITLEMENT_TABLE: ${ssm:/omni-dw/${self:provider.stage}/customerEntitlement/table}
+    CUSTOMER_ENTITLEMENT_HOUSEBILL_INDEX: ${ssm:/omni-dw/${self:provider.stage}/entitlement/houseBillNumber/index}
+    CUSTOMER_ENTITLEMENT_FILENUMBER_INDEX: ${ssm:/omni-dw/${self:provider.stage}/entitlement/fileNumber/index}
+    TOKEN_VALIDATION_TABLE_INDEX: ${ssm:/omni-dw/${self:provider.stage}/tokenValidator/apiKey/index}
+    REGION: ${self:provider.region}

@@ -1,0 +1,22 @@
+{
+  "name": "omni-dw-add-document",
+  "version": "1.0.0",
+  "description": "Repository for add document api for Data Warehouse project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bizcloud-experts/omni-dw-add-document.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bizcloud-experts/omni-dw-add-document/issues"
+  },
+  "homepage": "https://github.com/bizcloud-experts/omni-dw-add-document#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1329.0"
+  }
+}
