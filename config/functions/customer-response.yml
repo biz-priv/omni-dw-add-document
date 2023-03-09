@@ -1,0 +1,15 @@
+---
+function:
+  handler: src/customer-response.handler
+  name: customer-response-${self:provider.stage}
+  description: ${self:service} customer-response - ${self:provider.stage}
+  runtime: nodejs14.x
+authorizer: 
+  name: custom-authorization-${self:provider.stage}
+  resultTtlInSeconds: 0
+  type: request  
+  package:
+    include:
+      - src/customer-response.js
+    exclude:
+      - "**/*"

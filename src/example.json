@@ -1,0 +1,53 @@
+{
+    "body": {
+        "documentUploadRequest": {
+            "housebill": "1234567",
+            "contentType": "application/pdf",
+            "docType": "PACKING",
+            "b64str": "Jaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+    },
+    "enhancedAuthContext": {
+        "customerId": "10033518",
+        "principalId": "bizCloud|a1b2",
+        "integrationLatency": "437"
+    },
+    "headers": {
+        "accept": "*/*",
+        "accept-encoding": "gzip, deflate",
+        "Host": "dev-api.omnilogistics.com",
+        "User-Agent": "python-requests/2.25.1",
+        "X-Amzn-Trace-Id": "Root=1-63e3f7c6-54d6ecf267226f4f2be9ad16",
+        "x-api-key": "jHm9VyVmiA2n2HGdc701n93M8lKenans3skpyJ0w",
+        "X-Forwarded-For": "44.230.63.254",
+        "X-Forwarded-Port": "443",
+        "X-Forwarded-Proto": "https"
+    },
+    "query": {
+        "housebill": "6228982",
+        "filenumber":"",
+        "doctype": "housebill"
+    },
+    "path": {},
+    "identity": {
+        "cognitoIdentityPoolId": "",
+        "cognitoIdentityId": "",
+        "apiKey": "Rooxp9YQWT6o10WziF3D1as9PV4gozbm5hpiXpxI",
+        "principalOrgId": "",
+        "cognitoAuthenticationType": "",
+        "userArn": "",
+        "apiKeyId": "reinwvjfng",
+        "userAgent": "python-requests/2.25.1",
+        "accountId": "",
+        "caller": "",
+        "sourceIp": "44.230.63.254",
+        "accessKey": "",
+        "cognitoAuthenticationProvider": "",
+        "user": ""
+    },
+    "stageVariables": {
+        "SERVERLESS_STAGE": "dev",
+        "SERVERLESS_ALIAS": "v2"
+    },
+    "requestPath": "/shipment/getDocument"
+}
