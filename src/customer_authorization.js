@@ -5,10 +5,14 @@ const dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 
 const INTERNALERRORMESSAGE = "Internal Error.";
 
-exports.handler = async (event, context) => {
-  console.log("Event", event)
-  const api_key = event.headers['x-api-key'];
-  console.log("apiKey", api_key)
+module.exports.handler = async (event, context) => {
+  try {
+    console.info("Event: ", JSON.stringify(event));
+    api_key = event["headers"]["x-api-key"];
+  } catch (api_error) {
+    console.log("ApiKeyError", api_error);
+    return callback(response("400", "API Key not passed."));
+  }
   // validate the x-apiKEy from dynamoDB aas
   let response;
   try {
