@@ -6,11 +6,9 @@ const dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 const INTERNALERRORMESSAGE = "Internal Error.";
 
 exports.handler = async (event, context) => {
-  console.log(event)
+  console.log("Event", event)
   const api_key = event.headers['x-api-key'];
-  const housebill = event.query.housebill;
   console.log("apiKey", api_key)
-  console.log("housebill", housebill)
   // validate the x-apiKEy from dynamoDB aas
   let response;
   try {
@@ -26,7 +24,7 @@ exports.handler = async (event, context) => {
     return { statusCode: 400, body: 'Unauthorized' };
   }
   console.log(response.Items)
-  
+
   console.log(!response.Items[0])
   if (!response.Items[0]) {
     return { statusCode: 401, body: 'Unauthorized' };
@@ -53,7 +51,7 @@ exports.handler = async (event, context) => {
       entitlementResult = await dynamo.scan(entitlementParams).promise();
       console.log(entitlementResult)
     } catch (err) {
-      console.log("Error",err);
+      console.log("Error", err);
       return { statusCode: 402, body: 'Housebill not found' };
     }
     console.log(entitlementResult.Items[0])
