@@ -1,18 +1,17 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+const { dynamo_query } = require("./shared/dynamo");
 
 
 
-const INTERNALERRORMESSAGE = "Internal Error.";
 
-module.exports.handler = async (event, context) => {
-  try {
-    console.info("Event: ", JSON.stringify(event));
-    api_key = event["headers"]["x-api-key"];
-  } catch (api_error) {
-    console.log("ApiKeyError", api_error);
-    return callback(response("400", "API Key not passed."));
-  }
+
+exports.handler = async (event, context) => {
+  console.log(event)
+  const api_key = event.headers['x-api-key'];
+  const housebill = event.query.housebill;
+  console.log("apiKey", api_key)
+  console.log("housebill", housebill)
   // validate the x-apiKEy from dynamoDB aas
   let response;
   try {
@@ -69,28 +68,3 @@ module.exports.handler = async (event, context) => {
 
 
 
-const dynamo_query = (table_name, index_name, expression, attributes) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      var params = {
-        TableName: table_name,
-        IndexName: index_name,
-        KeyConditionExpression: expression,
-        ExpressionAttributeValues: attributes,
-      };
-
-      dynamo.query(params, function (err, data) {
-        if (err) {
-          console.log("Error:params", err);
-          reject(INTERNALERRORMESSAGE);
-        } else {
-          console.log("Success", data);
-          resolve(data);
-        }
-      });
-    } catch (error) {
-      console.log("error:getDynamoData", error);
-      reject(INTERNALERRORMESSAGE);
-    }
-  });
-};
