@@ -1,18 +1,17 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
+const { dynamo_query } = require("./shared/dynamo");
 
 
 
-const INTERNALERRORMESSAGE = "Internal Error.";
+
 
 module.exports.handler = async (event, context) => {
-  try {
-    console.info("Event: ", JSON.stringify(event));
-    api_key = event["headers"]["x-api-key"];
-  } catch (api_error) {
-    console.log("ApiKeyError", api_error);
-    return callback(response("400", "API Key not passed."));
-  }
+  console.log("Event",event)
+  const api_key = event.headers['x-api-key'];
+  const housebill = event.query.housebill;
+  console.log("apiKey", api_key)
+  console.log("housebill", housebill)
   // validate the x-apiKEy from dynamoDB aas
   let response;
   try {
@@ -49,11 +48,11 @@ module.exports.handler = async (event, context) => {
         ':housebill': { S: housebill }
       }
     };
-    console.log(entitlementParams)
+    console.log("entitlementParams",entitlementParams)
     let entitlementResult;
     try {
       entitlementResult = await dynamo.scan(entitlementParams).promise();
-      console.log(entitlementResult)
+      console.log("entitlementResult",entitlementResult)
     } catch (err) {
       console.log("Error", err);
       return { statusCode: 402, body: 'Housebill not found' };
@@ -64,33 +63,76 @@ module.exports.handler = async (event, context) => {
       return { statusCode: 403, body: 'Housebill is incorrect' };
     }
   }
-  return { statusCode: 200, body: 'Authorized' };
+  console.log( { statusCode: 200, body: 'Authorized' });
+  await fetchFkOrderNumberByHousebillNumber(housebill)
 };
 
 
 
-const dynamo_query = (table_name, index_name, expression, attributes) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      var params = {
-        TableName: table_name,
-        IndexName: index_name,
-        KeyConditionExpression: expression,
-        ExpressionAttributeValues: attributes,
-      };
 
-      dynamo.query(params, function (err, data) {
-        if (err) {
-          console.log("Error:params", err);
-          reject(INTERNALERRORMESSAGE);
-        } else {
-          console.log("Success", data);
-          resolve(data);
-        }
-      });
-    } catch (error) {
-      console.log("error:getDynamoData", error);
-      reject(INTERNALERRORMESSAGE);
+
+async function fetchFkOrderNumberByHousebillNumber(housebill) {
+  // const housebill= '6008067'
+  const params = {
+      // TableName: process.env.PKORDERNO_TABLE,
+      // IndexName: process.env.PKORDERNO_TABLE_INDEX,
+      TableName: 'omni-wt-rt-shipment-header-dev',
+      IndexName: 'Housebill-index',
+      KeyConditionExpression: 'Housebill = :housebill',
+      ExpressionAttributeValues: {
+          ':housebill': { S: housebill }
+        },
+      ProjectionExpression: 'PK_OrderNo'
+  };
+  console.log("params",params)
+  try {
+    const data = await dynamo.query(params).promise();
+    console.log("data",data.Items[0].PK_OrderNo.S)
+    let PK_OrderNo = data.Items[0].PK_OrderNo.S;
+    console.log("PK_OrderNo",PK_OrderNo)
+    await validateAddressMapping(PK_OrderNo);
+  } catch (err) {
+    console.error('Error fetching data from DynamoDB', err);
+    throw err;
+  }
+}
+
+
+
+
+
+async function validateAddressMapping(PK_OrderNo) {
+  try {
+
+    // query the omni-wt-address-mapping-dev table
+    const params = {
+      TableName: 'omni-wt-address-mapping-dev',
+      KeyConditionExpression: 'FK_OrderNo = :o',
+      ExpressionAttributeValues: {
+          ':o': { S: PK_OrderNo }
+        },
+    };
+    const data = await dynamo.query(params).promise();
+    console.log("data.Items.length",data.Items.length)
+    // check if the cc_con_zip and cc_con_address values are valid
+    if (data.Items.length > 0) {
+      const item = data.Items[0];
+      console.log("item",item)
+      console.log(item.cc_con_zip)
+      console.log(item.cc_con_address)
+      if (item.cc_con_zip.S == 1 && item.cc_con_address.S == 1) {
+        console.log('cc_con_zip:', item.cc_con_zip);
+        console.log('cc_con_address:', item.cc_con_address);
+        
+      } else {
+        console.error('Invalid cc_con_zip or cc_con_address in omni-wt-address-mapping-dev table:', item);
+        
+      }
+    } else {
+      console.error('No record found in omni-wt-address-mapping-dev table for FK_OrderNo:', PK_OrderNo);
     }
-  });
-};
+  } catch (err) {
+    console.error('Error fetching address mapping from omni-wt-address-mapping-dev table:', err);
+    throw err;
+  }
+} 
