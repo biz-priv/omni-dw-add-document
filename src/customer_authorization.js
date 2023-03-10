@@ -9,7 +9,7 @@ const { dynamo_query } = require("./shared/dynamo");
 module.exports.handler = async (event, context) => {
   console.log("Event",event)
   const api_key = event.headers['x-api-key'];
-  const housebill = event.query.housebill;
+  const housebill = event.queryStringParameters.housebill;
   console.log("apiKey", api_key)
   console.log("housebill", housebill)
   // validate the x-apiKEy from dynamoDB aas
