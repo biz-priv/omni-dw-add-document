@@ -18,7 +18,12 @@
   "homepage": "https://github.com/bizcloud-experts/omni-dw-add-document#readme",
   "dependencies": {
     "aws-sdk": "^2.1329.0",
+    "axios": "^1.3.4",
     "joi": "^17.8.3",
+    "js-base64": "^3.7.5",
+    "xmlbuilder2": "^3.0.2"
+  },
+  "devDependencies": {
     "serverless-offline": "^12.0.4",
     "serverless-provisioned-concurrency-autoscaling": "^1.9.1"
   }

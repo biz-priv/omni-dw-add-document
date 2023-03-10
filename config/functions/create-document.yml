@@ -1,0 +1,50 @@
+---
+function:
+  handler: src/create-document.handler
+  name: create-document-${self:provider.stage}
+  description: create document api service - ${self:provider.stage}
+  warmup:
+    default:
+      enabled: true
+      # alias: ${self:custom.alias}
+  runtime: nodejs14.x
+  timeout: 500
+  memorySize: 2048
+  events:
+    - http:
+        path: /createDocument
+        method: POST
+        integration: lambda
+        private: true
+        cors: true
+        response:
+          # headers: ${self:custom.standardResponseHeaders}
+          # statusCodes:
+          #   200:
+          #     pattern: ""
+          #   400:
+          #     pattern: '[\s\S]*\[400\][\s\S]*'
+          #     headers:
+          #       Content-Type: "'application/json'"
+          #     template: ${file(responseTemplate.vtl)}
+          #   500:
+          #     pattern: '[\s\S]*\[500\][\s\S]*'
+          #     headers:
+          #       Content-Type: "'application/json'"
+          #     template: ${file(responseTemplate.vtl)}
+        authorizer:
+          name: custom-authorization
+          resultTtlInSeconds: 0
+          identitySource: method.request.header.x-api-key
+          type: request
+  package:
+    include:
+      - src/create-document.js
+      - node_modules/**
+  environment:
+    REGION: ${self:provider.region}
+    UPLOAD_DOCUMENT_API: ${ssm:/omni-dw/${self:provider.stage}/api/addDocument}
+    HOUSEBILL_TABLE: ${ssm:/omni-dw/${self:provider.stage}/customerEntitlement/table}
+    HOUSEBILL_TABLE_INDEX: ${ssm:/omni-dw/${self:provider.stage}/entitlement/houseBillNumber/index}
+    FILENUMBER_TABLE_INDEX: ${ssm:/omni-dw/${self:provider.stage}/entitlement/fileNumber/index}
+    IVIA_CUSTOMER_ID: ${ssm:/omni-dw/${self:provider.stage}/api/iviaId}
