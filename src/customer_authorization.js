@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 const { dynamo_query } = require("./shared/dynamo");
+const axios = require("axios");
 
 
 
@@ -9,7 +10,7 @@ const { dynamo_query } = require("./shared/dynamo");
 module.exports.handler = async (event, context) => {
   console.log("Event",event)
   const api_key = event.headers['x-api-key'];
-  const housebill = event.queryStringParameters.housebill;
+  const housebill = event.query.housebill;
   console.log("apiKey", api_key)
   console.log("housebill", housebill)
   // validate the x-apiKEy from dynamoDB aas
@@ -64,14 +65,16 @@ module.exports.handler = async (event, context) => {
     }
   }
   console.log( { statusCode: 200, body: 'Authorized' });
-  await fetchFkOrderNumberByHousebillNumber(housebill)
+  await fetchFkOrderNumberByHousebillNumber(housebill,event)
+
+
 };
 
 
 
 
 
-async function fetchFkOrderNumberByHousebillNumber(housebill) {
+async function fetchFkOrderNumberByHousebillNumber(housebill,event) {
   // const housebill= '6008067'
   const params = {
       // TableName: process.env.PKORDERNO_TABLE,
@@ -90,7 +93,7 @@ async function fetchFkOrderNumberByHousebillNumber(housebill) {
     console.log("data",data.Items[0].PK_OrderNo.S)
     let PK_OrderNo = data.Items[0].PK_OrderNo.S;
     console.log("PK_OrderNo",PK_OrderNo)
-    await validateAddressMapping(PK_OrderNo);
+    await validateAddressMapping(PK_OrderNo,event);
   } catch (err) {
     console.error('Error fetching data from DynamoDB', err);
     throw err;
@@ -101,7 +104,7 @@ async function fetchFkOrderNumberByHousebillNumber(housebill) {
 
 
 
-async function validateAddressMapping(PK_OrderNo) {
+async function validateAddressMapping(PK_OrderNo,event) {
   try {
 
     // query the omni-wt-address-mapping-dev table
@@ -123,6 +126,7 @@ async function validateAddressMapping(PK_OrderNo) {
       if (item.cc_con_zip.S == 1 && item.cc_con_address.S == 1) {
         console.log('cc_con_zip:', item.cc_con_zip);
         console.log('cc_con_address:', item.cc_con_address);
+        console.log("event.body",event.body)
         
       } else {
         console.error('Invalid cc_con_zip or cc_con_address in omni-wt-address-mapping-dev table:', item);
@@ -130,6 +134,7 @@ async function validateAddressMapping(PK_OrderNo) {
       }
     } else {
       console.error('No record found in omni-wt-address-mapping-dev table for FK_OrderNo:', PK_OrderNo);
+      return false;
     }
   } catch (err) {
     console.error('Error fetching address mapping from omni-wt-address-mapping-dev table:', err);
