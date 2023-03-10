@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const Joi = require('joi');
 
-exports.handler = async (event) => {
+module.exports.handler = async (event) => {
     const payload = event.body;
     console.log(event)
     const schema = Joi.object({
