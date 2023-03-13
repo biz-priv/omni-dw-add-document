@@ -4,6 +4,8 @@ function:
   name: custom-authorization-${self:provider.stage}
   description: ${self:service} custom authorizer - ${self:provider.stage}
   runtime: nodejs14.x
+  layers:
+    - { Ref: OmniAddDocumentLayerLambdaLayer }
   package:
     include:
       - "src/customer_authorization.js"

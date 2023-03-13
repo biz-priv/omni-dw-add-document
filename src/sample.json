@@ -1,59 +1,61 @@
 {
-    "body": {        "documentUploadRequest": {
-        "housebill": "1234567",
+    "body": {
+      "documentUploadRequest": {
+        "housebill": "8423136",
         "contentType": "application/pdf",
         "docType": "PACKING",
-        "b64str": "Jaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-      }},
-    "method": "GET",
-    "principalId": "bizCloud|a1b2",
-    "stage": "v2",
-    "cognitoPoolClaims": {
-        "sub": ""
+        "b64str": "aGVsbG8gd29ybGQgLSBJVklBIC0gQml6dGVzdA=="
+      }
     },
+    "method": "POST",
+    "principalId": "bizCloud|a1b2",
+    "stage": "dev",
+    "cognitoPoolClaims": { "sub": "" },
     "enhancedAuthContext": {
-        "customerId": "10033518",
-        "principalId": "bizCloud|a1b2",
-        "integrationLatency": "437"
+      "customerId": "10098763",
+      "principalId": "bizCloud|a1b2",
+      "integrationLatency": "1465"
     },
     "headers": {
-        "accept": "*/*",
-        "accept-encoding": "gzip, deflate",
-        "Host": "dev-api.omnilogistics.com",
-        "User-Agent": "python-requests/2.25.1",
-        "X-Amzn-Trace-Id": "Root=1-63e3f7c6-54d6ecf267226f4f2be9ad16",
-        "x-api-key": "jHm9VyVmiA2n2HGdc701n93M8lKenans3skpyJ0w",
-        "X-Forwarded-For": "44.230.63.254",
-        "X-Forwarded-Port": "443",
-        "X-Forwarded-Proto": "https"
+      "Accept": "*/*",
+      "Accept-Encoding": "gzip, deflate, br",
+      "CloudFront-Forwarded-Proto": "https",
+      "CloudFront-Is-Desktop-Viewer": "true",
+      "CloudFront-Is-Mobile-Viewer": "false",
+      "CloudFront-Is-SmartTV-Viewer": "false",
+      "CloudFront-Is-Tablet-Viewer": "false",
+      "CloudFront-Viewer-ASN": "55836",
+      "CloudFront-Viewer-Country": "IN",
+      "Content-Type": "application/json",
+      "Host": "kynee8okha.execute-api.us-east-1.amazonaws.com",
+      "Postman-Token": "4fadede9-4daa-4226-bd87-b2214417700a",
+      "User-Agent": "PostmanRuntime/7.29.2",
+      "Via": "1.1 5a846bdc525feb3054bdab71544cdb64.cloudfront.net (CloudFront)",
+      "X-Amz-Cf-Id": "R-r4PNrbMMfamc0h3x2Mlz5bG2HgWf3HT4pGxwl22tvKT79xtTB49w==",
+      "X-Amzn-Trace-Id": "Root=1-640f0883-2da878b93b428e5b2ffe32ae",
+      "x-api-key": "jHm9VyVmiA2n2HGdc701n93M8lKenans3skpyJ0w",
+      "X-Forwarded-For": "157.48.155.143, 64.252.155.153",
+      "X-Forwarded-Port": "443",
+      "X-Forwarded-Proto": "https"
     },
-    "query": {
-        "housebill": "6228982",
-        "filenumber":"",
-        "doctype": "housebill",
-        "doctype": "label",
-        "doctype": "hcpod"
-    },
+    "query": {},
     "path": {},
     "identity": {
-        "cognitoIdentityPoolId": "",
-        "cognitoIdentityId": "",
-        "apiKey": "Rooxp9YQWT6o10WziF3D1as9PV4gozbm5hpiXpxI",
-        "principalOrgId": "",
-        "cognitoAuthenticationType": "",
-        "userArn": "",
-        "apiKeyId": "reinwvjfng",
-        "userAgent": "python-requests/2.25.1",
-        "accountId": "",
-        "caller": "",
-        "sourceIp": "44.230.63.254",
-        "accessKey": "",
-        "cognitoAuthenticationProvider": "",
-        "user": ""
+      "cognitoIdentityPoolId": "",
+      "cognitoIdentityId": "",
+      "apiKey": "jHm9VyVmiA2n2HGdc701n93M8lKenans3skpyJ0w",
+      "principalOrgId": "",
+      "cognitoAuthenticationType": "",
+      "userArn": "",
+      "apiKeyId": "64ny63d3xf",
+      "userAgent": "PostmanRuntime/7.29.2",
+      "accountId": "",
+      "caller": "",
+      "sourceIp": "157.48.155.143",
+      "accessKey": "",
+      "cognitoAuthenticationProvider": "",
+      "user": ""
     },
-    "stageVariables": {
-        "SERVERLESS_STAGE": "dev",
-        "SERVERLESS_ALIAS": "v2"
-    },
-    "requestPath": "/shipment/getDocument"
-}
+    "stageVariables": {},
+    "requestPath": "/customer-response"
+  }

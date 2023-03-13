@@ -59,6 +59,15 @@ plugins:
 package:
   individually: true
 
+layers:
+  OmniAddDocumentLayer:
+    path: lambdaLayer/lib
+    name: ${self:service}-layer-${self:provider.stage}
+    description: Omni add document lambda layer for all node modules - ${self:provider.stage}
+    compatibleRuntimes:
+      - nodejs14.x
+    retain: false
+
 
 functions:
   customer-response: ${file(config/functions/customer-response.yml):function}
