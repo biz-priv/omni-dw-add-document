@@ -47,7 +47,7 @@ module.exports.handler = async (event, context, callback) => {
     }
 
     
-    console.log("customerId", customer_id)
+    
     if (event.methodArn.includes("/customer-response")) {
       return callback(
         null,

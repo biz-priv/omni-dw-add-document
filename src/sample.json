@@ -4,7 +4,7 @@
         "housebill": "6228982",
         "contentType": "application/pdf",
         "docType": "PACKING",
-        "b64str": "aGVsbG8gd29ybGQgLSBJVklBIC0gQml6dGVzdA=="
+        "b64str": "aGVsbG8gd29ybGQgLSBJVklBIC0gQm"
       }
     },
     "method": "POST",
