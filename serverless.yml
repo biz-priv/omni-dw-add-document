@@ -51,6 +51,10 @@ custom:
     Application: OmniRealTimeReplication
     CreateBy: BizCloudExperts
     Environment: ${self:custom.stage}
+  standardResponseHeaders:
+    "Access-Control-Allow-Origin": "'*'"
+    "Access-Control-Allow-Credentials": "'true'"
+    "Access-Control-Allow-Headers": "'*'"
 
 plugins:
   - serverless-offline
