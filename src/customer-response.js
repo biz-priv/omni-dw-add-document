@@ -101,7 +101,7 @@ module.exports.handler = async (event, PK_OrderNo) => {
 
     // Validate address mapping
     const validationResult = await validateAddressMapping(PkOrderNumber, data);
-    console.log("validationResult", validationResult);
+    // console.log("validationResult", validationResult);
     if (validationResult.status === 403) {
         return validationResult;
     }
@@ -122,17 +122,20 @@ module.exports.handler = async (event, PK_OrderNo) => {
         
 
     if (responseBody.httpStatus === 200) {
-        return {status:200,body:JSON.stringify({
-            message: 'Success'
-        })}
+        return {
+            "documentUploadResponse": {
+                "message": "success"
+            }
+        }
+        
     }
 
 };
 
 
 async function fetchPkOrderNumberByHousebillNumber(data) {
-    const housebill=data.housebill;
-     //const housebill = '8423136';
+   // const housebill=data.housebill;
+     const housebill = '8423136';
     const params = {
         TableName: process.env.SHIPMENT_HEADER_TABLE,
         IndexName: process.env.SHIPMENT_HEADER_TABLE_INDEX,
@@ -160,7 +163,9 @@ async function fetchPkOrderNumberByHousebillNumber(data) {
     }
 }
 
-
+function pad2(n) {
+    return n < 10 ? "0" + n : n;
+  }
 
 async function validateAddressMapping(PkOrderNumber, data) {
     try {
@@ -185,7 +190,7 @@ async function validateAddressMapping(PkOrderNumber, data) {
                 console.log('cc_con_zip:', item.cc_con_zip);
                 console.log('cc_con_address:', item.cc_con_address);
                 const result3 = await makeJsonToXml(data);
-                console.log("result3", result3)
+                // console.log("result3", result3)
                 return result3;
             } else {
                 console.error('Invalid cc_con_zip or cc_con_address in omni-wt-address-mapping-dev table:', item);
@@ -199,7 +204,7 @@ async function validateAddressMapping(PkOrderNumber, data) {
         }
     } catch (err) {
         console.error('Error fetching address mapping from omni-wt-address-mapping-dev table:', err);
-        throw err;
+        return{ status: 403, body: 'Invalid' }
     }
 }
 
@@ -209,7 +214,7 @@ async function validateAddressMapping(PkOrderNumber, data) {
 async function makeJsonToXml(data) {
     console.log("data", data)
     const date = new Date();
-    const timestamp = date.toISOString().replace(/[-:]/g, '').slice(0, 14);
+    let fileExtension="";
      if (data.b64str.length < 3000000) {
         let pattern =
           /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$/;
@@ -229,7 +234,51 @@ async function makeJsonToXml(data) {
           response(400, "Please ensure b64str field is a valid base64 string.")
         );
       }
-
+      if (
+        "contentType" in data &&
+        data.contentType.split("/").length >= 2 &&
+        data.contentType.split("/")[1] != "" &&
+        data.contentType.includes("/pdf"||"/gif"||"/jpeg"||"/png")
+      ) {
+        fileExtension =
+          "." + data.contentType.split("/")[1];
+      } else {
+        if (data.b64str.startsWith("/9j/4")) {
+          fileExtension = ".jpeg";
+        } else if (data.b64str.startsWith("iVBOR")) {
+          fileExtension = ".png";
+        } else if (data.b64str.startsWith("R0lG")) {
+          fileExtension = ".gif";
+        } else if (data.b64str.startsWith("J")) {
+          fileExtension = ".pdf";
+        } else if (
+          data.b64str.startsWith("TU0AK") ||
+          data.b64str.startsWith("SUkqA")
+        ) {
+          fileExtension = ".tiff";
+        } else {
+          fileExtension = "";
+        }
+      }
+      if (fileExtension == "") {
+        return (
+          response(
+            400,
+            "Unable to identify filetype. Please send content type with file extension."
+          )
+        );
+      }
+     console.log(data.contentType.split("/")[1])
+     console.log(data.contentType.split("/").length)
+      let formatDate =
+        date.getFullYear().toString() +
+        pad2(date.getMonth() + 1) +
+        pad2(date.getDate()) +
+        pad2(date.getHours()) +
+        pad2(date.getMinutes()) +
+        pad2(date.getSeconds());
+    let fileName=data.housebill + '_' + data.docType + '_' + formatDate + fileExtension
+    console.log("fileName",fileName)
     let xml = "";
     xml = convert({
         "soap:Envelope": {
@@ -240,15 +289,15 @@ async function makeJsonToXml(data) {
                 AttachFileToShipment: {
                     "@xmlns": "http://tempuri.org/",
                     Housebill: data.housebill,
-                    Filename: data.housebill + '_' + data.docType + '_' + timestamp + '.pdf',
+                    Filename: fileName,
                     DocType: data.docType,
                     FileDataBase64: data.b64str
                 }
             }
         }
     });
-
-    console.info("xml payload", xml);
+    
+    // console.info("xml payload", xml);
     return xml;
 
 }

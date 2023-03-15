@@ -23,9 +23,25 @@ function:
           identitySource: method.request.header.x-api-key
           type: request
         cors: true
+        response:
+          headers: ${self:custom.standardResponseHeaders}
+          statusCodes:
+            200:
+              pattern: ""
+            400:
+              pattern: '[\s\S]*\[400\][\s\S]*'
+              headers:
+                Content-Type: "'application/json'"
+              template: ${file(responseTemplate.vtl)}
+            500:
+              pattern: '[\s\S]*\[500\][\s\S]*'
+              headers:
+                Content-Type: "'application/json'"
+              template: ${file(responseTemplate.vtl)}
   environment:
     CUSTOMER_ENTITLEMENT_TABLE: ${ssm:/omni-dw/${self:provider.stage}/customerEntitlement/table}
     SHIPMENT_HEADER_TABLE : ${ssm:/omni-dw/${self:provider.stage}/shipment-header/ddb.tableName}
     SHIPMENT_HEADER_TABLE_INDEX : ${ssm:/omni-dw/${self:provider.stage}/shipment-header-index/ddb.tableIndex}
     ADDRESS_MAPPING_TABLE : ${ssm:/omni-dw/${self:provider.stage}/addressMapping/table}
     UPLOAD_DOCUMENT_API: ${ssm:/omni-dw/${self:provider.stage}/api/addDocument}
+    IVIA_CUSTOMERID: ${ssm:/omni-dw/${self:provider.stage}/ivia_customerid}

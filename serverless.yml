@@ -74,3 +74,34 @@ functions:
   customer-authorization: ${file(config/functions/customer-authorization.yml):function}
   # create-document: ${file(config/functions/create-document.yml):function}
   # publish-to-wt: ${file(config/functions/publish-to-wt.yml):function}
+
+
+
+
+resources:
+  Resources:
+    BadRequestResponse:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: ACCESS_DENIED
+        ResponseTemplates:
+          application/json: |
+            {
+              "errorDescription":"$context.authorizer.message"
+            }
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+        StatusCode: "400"
+    AuthFailureGatewayResponse:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+        StatusCode: "401"

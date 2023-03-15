@@ -32,22 +32,25 @@ module.exports.handler = async (event, context, callback) => {
         )
       );
     }
-    const response = await dynamo_query(
+    const apiKeyValidation = await dynamo_query(
       process.env.TOKEN_VALIDATION_TABLE,
       process.env.TOKEN_VALIDATION_TABLE_INDEX,
       "ApiKey = :apikey",
       { ":apikey": { S: api_key } }
     );
-    console.log("response", response)
-    console.log(response.Items)
-
-    console.log(!response.Items[0])
-    if (!response.Items[0]) {
-      return { statusCode: 401, body: 'Unauthorized' };
-    }
-
+    console.log("apiKeyValidation", apiKeyValidation)
+    const customer_id = validate_dynamo_query_response(response, event);
+    console.log("customer_id", customer_id)
+   
     
     
+    // console.log(!apiKeyValidation.Items[0])
+    // if (!apiKeyValidation.Items[0]) {
+    //   return callback(response(401, "Unauthorized"));
+    
+    // }
+
+    //  const customer_id = apiKeyValidation.Items[0].CustomerID.S;
     if (event.methodArn.includes("/customer-response")) {
       return callback(
         null,
@@ -96,7 +99,7 @@ const generate_policy = (
 
 
 const validate_input = (method_arn) => {
-  if (method_arn.includes("/shipment/addmilestone")) {
+  if (method_arn.includes("/customer-response")) {
     return { status: "success" };
   } else {
     return { status: "success" };
@@ -108,4 +111,38 @@ const response = (code, message) => {
     httpStatus: code,
     message,
   });
+};
+
+
+
+const validate_dynamo_query_response = (response, event) => {
+  console.info("validate_dynamo_query_response", response);
+  try {
+    if (
+      !response ||
+      !response.hasOwnProperty("Items") ||
+      response.Items.length == 0
+    ) {
+      return generate_policy(
+        POLICY_ID,
+        "Deny",
+        event.methodArn,
+        null,
+        "Invalid API Key"
+      );
+    } else if (response["Items"][0]["CustomerID"]["S"].length > 1) {
+      return response["Items"][0]["CustomerID"]["S"];
+    } else {
+      return generate_policy(
+        POLICY_ID,
+        "Deny",
+        event.methodArn,
+        null,
+        "You're not authorized to perform this API action. Please contact admin for more details."
+      );
+    }
+  } catch (cust_id_notfound_error) {
+    console.log("CustomerIdNotFound:", cust_id_notfound_error);
+    throw "Customer Id not found.";
+  }
 };
