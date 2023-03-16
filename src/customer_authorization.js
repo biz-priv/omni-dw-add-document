@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const dynamo = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 const { dynamo_query } = require("./shared/dynamo");
 
 
@@ -39,18 +38,12 @@ module.exports.handler = async (event, context, callback) => {
       { ":apikey": { S: api_key } }
     );
     console.log("apiKeyValidation", apiKeyValidation)
-    const customer_id = validate_dynamo_query_response(response, event);
+    const customer_id = validate_dynamo_query_response(apiKeyValidation, event);
     console.log("customer_id", customer_id)
-   
-    
-    
-    // console.log(!apiKeyValidation.Items[0])
-    // if (!apiKeyValidation.Items[0]) {
-    //   return callback(response(401, "Unauthorized"));
-    
-    // }
+    if (typeof customer_id != "string") {
+      return callback(null, customer_id);
+    }
 
-    //  const customer_id = apiKeyValidation.Items[0].CustomerID.S;
     if (event.methodArn.includes("/customer-response")) {
       return callback(
         null,
@@ -115,13 +108,16 @@ const response = (code, message) => {
 
 
 
-const validate_dynamo_query_response = (response, event) => {
-  console.info("validate_dynamo_query_response", response);
+const validate_dynamo_query_response = (apiKeyValidation, event) => {
+  console.info("validate_dynamo_query_response", apiKeyValidation);
+  console.log("!apiKeyValidation",!apiKeyValidation)
+  console.log("apiKeyValidation.Items.length",apiKeyValidation.Items.length)
+  console.log("!apiKeyValidation.Items", !apiKeyValidation.Items)
   try {
     if (
-      !response ||
-      !response.hasOwnProperty("Items") ||
-      response.Items.length == 0
+      !apiKeyValidation ||
+      !apiKeyValidation.hasOwnProperty("Items") ||
+      apiKeyValidation.Items.length == 0
     ) {
       return generate_policy(
         POLICY_ID,
@@ -130,8 +126,8 @@ const validate_dynamo_query_response = (response, event) => {
         null,
         "Invalid API Key"
       );
-    } else if (response["Items"][0]["CustomerID"]["S"].length > 1) {
-      return response["Items"][0]["CustomerID"]["S"];
+    } else if (apiKeyValidation["Items"][0]["CustomerID"]["S"].length > 1) {
+      return apiKeyValidation["Items"][0]["CustomerID"]["S"];
     } else {
       return generate_policy(
         POLICY_ID,

@@ -1,24 +1,24 @@
 ---
 function:
-  handler: src/customer-response.handler
-  name: customer-response-${self:provider.stage}
+  handler: src/customer_response.handler
+  name: customer-response-add-document-${self:provider.stage}
   description: ${self:service} customer-response - ${self:provider.stage}
   runtime: nodejs14.x
   layers:
     - { Ref: OmniAddDocumentLayerLambdaLayer }
   package:
     include:
-      - src/customer-response.js
+      - src/customer_response.js
     exclude:
       - "**/*"  
   events:
     - http:
-        path: /customer-response
+        path: /shipment/addDocument
         method: POST
         integration: lambda
         private: true
         authorizer:
-          name: customer-authorization
+          name: customer-authorization-add-document
           resultTtlInSeconds: 0
           identitySource: method.request.header.x-api-key
           type: request

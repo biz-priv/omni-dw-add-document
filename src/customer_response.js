@@ -64,7 +64,7 @@ module.exports.handler = async (event, PK_OrderNo) => {
     const customer_id = event.enhancedAuthContext.customerId;
     console.log("customer_id", customer_id)
 
-    const isIvia = customer_id === '10321412';
+    const isIvia = customer_id === process.env.IVIA_CUSTOMERID;
 
     // If customerId is not Ivia, check housebill entitlements
     if (!isIvia) {
@@ -134,8 +134,7 @@ module.exports.handler = async (event, PK_OrderNo) => {
 
 
 async function fetchPkOrderNumberByHousebillNumber(data) {
-   // const housebill=data.housebill;
-     const housebill = '8423136';
+    const housebill=data.housebill;
     const params = {
         TableName: process.env.SHIPMENT_HEADER_TABLE,
         IndexName: process.env.SHIPMENT_HEADER_TABLE_INDEX,
